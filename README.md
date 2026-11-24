@@ -21,6 +21,22 @@ A natural-language business intelligence assistant for The Gadget Store's sales 
 
 ---
 
+## 🎬 Live Demo — Video Walkthrough
+
+Watch the capstone demonstration of **Talk to My Data**, a generative AI business intelligence assistant for The Gadget Store.
+
+<div align="center">
+
+[![Watch the Talk to My Data project demonstration](https://i.ytimg.com/vi/l5f0BkeYtMU/hqdefault.jpg)](https://www.youtube.com/watch?v=l5f0BkeYtMU)
+
+[![Watch on YouTube](https://img.shields.io/badge/Watch_Project_Demo-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=l5f0BkeYtMU)
+
+</div>
+
+The video demonstrates the project concept: natural-language business questions, SQL generation, retail analytics and interactive visualizations.
+
+---
+
 ## 2. Dataset
 
 **Global Electronics Retailer** (Maven Analytics / Microsoft, public domain — also mirrored on Kaggle)
