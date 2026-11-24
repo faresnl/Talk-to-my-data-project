@@ -1,7 +1,7 @@
 # Talk-to-my-Data (GenAI BI) — The Gadget Store.....
 **Artefact Capstone 2026 | Case #1: Building a real-world Generative AI application**
 
-**Team:** Raed Ali Ba Fadhl (Lead), Fares Al-humaikani, Amir Safi, Muhammed Dulger
+**Team:** Raed Ali Ba Fadhl (Lead), Fares Al-humaikani, Muhammed Dulger
 
 ---
 
