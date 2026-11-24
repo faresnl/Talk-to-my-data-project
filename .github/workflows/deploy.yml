@@ -1,0 +1,102 @@
+name: Deploy to Google Cloud Run
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      target:
+        description: GCP environment
+        type: choice
+        options: [personal, raed]
+        default: personal
+        required: true
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: deployment-${{ github.event.inputs.target || 'personal' }}
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      TARGET_ENVIRONMENT: ${{ github.event.inputs.target || 'personal' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Load environment
+        id: config
+        run: python scripts/deployment.py "$TARGET_ENVIRONMENT" configure
+
+      - name: Validate Raed deployment credentials
+        if: steps.config.outputs.auth_mode == 'credentials'
+        env:
+          GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
+        run: python scripts/deployment.py "$TARGET_ENVIRONMENT" validate-credentials
+
+      - name: Authenticate to Raed project
+        if: steps.config.outputs.auth_mode == 'credentials'
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+          project_id: '${{ steps.config.outputs.project_id }}'
+
+      - name: Authenticate with federation
+        if: steps.config.outputs.auth_mode == 'federation'
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: '${{ steps.config.outputs.workload_identity_provider }}'
+          service_account: '${{ steps.config.outputs.deployer_service_account }}'
+          project_id: '${{ steps.config.outputs.project_id }}'
+
+      - uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: '${{ steps.config.outputs.project_id }}'
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.14.3
+          terraform_wrapper: false
+
+      - name: Verify deployment identity
+        env:
+          EXPECTED_ACCOUNT: ${{ steps.config.outputs.deployer_service_account }}
+        run: |
+          ACCOUNT=$(gcloud auth list --filter=status:ACTIVE --format='value(account)')
+          test "$ACCOUNT" = "$EXPECTED_ACCOUNT"
+
+      - name: Initialize isolated Terraform state
+        run: python scripts/deployment.py "$TARGET_ENVIRONMENT" init
+
+      - name: Import existing application resources
+        run: python scripts/deployment.py "$TARGET_ENVIRONMENT" adopt
+
+      - name: Bootstrap Artifact Registry if needed
+        run: python scripts/deployment.py "$TARGET_ENVIRONMENT" registry
+
+      - name: Configure Docker
+        run: gcloud auth configure-docker '${{ steps.config.outputs.region }}-docker.pkg.dev' --quiet
+
+      - name: Build and push images
+        env:
+          BACKEND_IMAGE: ${{ steps.config.outputs.backend_image }}
+          FRONTEND_IMAGE: ${{ steps.config.outputs.frontend_image }}
+        run: |
+          docker build -t "$BACKEND_IMAGE" -f Dockerfile.backend .
+          docker push "$BACKEND_IMAGE"
+          docker build -t "$FRONTEND_IMAGE" -f Dockerfile.frontend .
+          docker push "$FRONTEND_IMAGE"
+
+      - name: Plan infrastructure and application deployment
+        run: python scripts/deployment.py "$TARGET_ENVIRONMENT" plan
+
+      - name: Apply verified plan
+        run: python scripts/deployment.py "$TARGET_ENVIRONMENT" apply
+
+      - name: Check health and live BigQuery access
+        run: python scripts/deployment.py "$TARGET_ENVIRONMENT" verify
