@@ -23,7 +23,7 @@ A natural-language business intelligence assistant for The Gadget Store's sales 
 
 ## 🎬 Live Demo
 
-Watch the capstone demonstration of **Talk to your data**, a generative AI business intelligence assistant for The Gadget Store.
+Watch the capstone demonstration of **Talk to my data**, a generative AI business intelligence assistant for The Gadget Store.
 
 <div align="center">
 
