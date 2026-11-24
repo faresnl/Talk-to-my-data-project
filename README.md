@@ -1,4 +1,4 @@
-# Talk-to-my-Data (GenAI BI) — The Gadget Store.....
+<img width="1321" height="280" alt="image" src="https://github.com/user-attachments/assets/1c22ca96-80d7-4765-a150-b9222e054911" /># Talk-to-my-Data (GenAI BI) — The Gadget Store.....
 **Artefact Capstone 2026 | Case #1: Building a real-world Generative AI application**
 
 **Team:** Raed Ali Ba Fadhl (Lead), Fares Al-humaikani, Amir Safi, Muhammed Dulger
@@ -21,9 +21,9 @@ A natural-language business intelligence assistant for The Gadget Store's sales 
 
 ---
 
-## 🎬 Live Demo — Video Walkthrough
+## 🎬 Live Demo
 
-Watch the capstone demonstration of **Talk to My Data**, a generative AI business intelligence assistant for The Gadget Store.
+Watch the capstone demonstration of **Talk to your data**, a generative AI business intelligence assistant for The Gadget Store.
 
 <div align="center">
 
@@ -33,7 +33,7 @@ Watch the capstone demonstration of **Talk to My Data**, a generative AI busines
 
 </div>
 
-The video demonstrates the project concept: natural-language business questions, SQL generation, retail analytics and interactive visualizations.
+The capstone video demonstrates the project concept: natural-language business questions, SQL generation, retail analytics and interactive visualizations.
 
 ---
 
